@@ -41,18 +41,22 @@ def expected_output_after_carry(num1, num2):
     return num1 + num2 + 10  # Add 10 to simulate the carry in the tens place
 
 def save_pairs_to_csv(data_pairs, filename="data_pairs.csv"):
-    """Save the generated data pairs to a CSV file and expected output after considering hypthetical carry in base case."""
+    """Save the generated data pairs to a CSV file and expected output after considering hypthetical carry in base case.
+    Additionally, save a prompt for base and source problem in the CSV file."""
 
     with open(filename, mode='w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(["Base Num1", "Base Num2", "Source Num1", "Source Num2", "Expected Base Output", "Expected Source Output", "Expected Output After Carry"])
+        writer.writerow(["Base Num1", "Base Num2", "Base prompt", "Source Num1", "Source Num2", "Source prompt", "Expected Base Output", "Expected Source Output", "Expected Output After Carry"])
         for (base_num1, base_num2), (source_num1, source_num2) in data_pairs:
             expected_base_output = expected_output(base_num1, base_num2)
             expected_source_output = expected_output(source_num1, source_num2)
             expected_base_output_after_carry = expected_output_after_carry(base_num1, base_num2)
-            writer.writerow([base_num1, base_num2, source_num1, source_num2, expected_base_output, expected_source_output, expected_base_output_after_carry])
+            writer.writerow([base_num1, base_num2, f"What is {base_num1} + {base_num2}?", source_num1, source_num2, f"What is {source_num1} + {source_num2}?", expected_base_output, expected_source_output, expected_base_output_after_carry])
 
 if __name__ == "__main__":
-    data_pairs = generate_data_pair(max_pairs=100)
-    save_pairs_to_csv(data_pairs, filename="data_pairs.csv")
-    print("Data pairs generated and saved to data_pairs.csv")
+    """Create train.csv and test.csv files with addition problems each, ensuring that the base problem has no carry in the ones place while the source problem does."""
+    data_pairs = generate_data_pair(max_pairs=1000)
+    save_pairs_to_csv(data_pairs, filename="train.csv")
+    data_pairs = generate_data_pair(max_pairs=200)
+    save_pairs_to_csv(data_pairs, filename="test.csv")
+    print("Data pairs generated and saved to train.csv and test.csv")
